@@ -6,6 +6,7 @@ using namespace std;
 bool containsDuplicate(vector<int>& nums) {
     int oldamt=nums.size();
     sort(nums.begin(),nums.end());
+    //unique(begin(nums),end(nums));
     nums.erase(unique(nums.begin(),nums.end()),nums.end());
     //for (int i : nums)
     //    cout << i << " ";
