@@ -24,13 +24,44 @@ bool isValidSudoku(vector<vector<char>>& board) {
     //validating line
     for (int i=0;i<9;i++) {
         set<char> s;
-        for(int j=0;i<9;j++) {
-            if (s.count(board[i][j])>0) return false;
+        for(int j=0;j<9;j++) {
+            if (board[i][j]=='.') continue;
+            if (s.count(board[i][j])>0) {
+                //cout << "i: " << i << " j: " << j << " board: " << board[i][j] << endl;
+                return false;
+            }
             s.insert(board[i][j]);
         }
     }
     //validating column
-    
+    for (int j=0;j<9;j++) {
+        set<char> s;
+        for(int i=0;i<9;i++) {
+            if (board[i][j]=='.') continue;
+            if (s.count(board[i][j])>0) return false;
+            s.insert(board[i][j]);
+        }
+    }
+    //validating square
+    for (int i=0;i<3;i++) {
+        for (int j=0;j<3;j++) {
+            //cout << endl;
+            set<char> s;
+            for (int k=0;k<3;k++) {
+                for (int l=0;l<3;l++) {
+                    int px=3*i+k;
+                    int py=3*j+l;
+                    if (board[px][py]=='.') continue;
+                    // cout << "px: " << px << " py: " << py << " board: " << board[px][py] << endl;
+                    if (s.count(board[px][py])>0) {
+                        return false;
+                    }
+                    s.insert(board[px][py]);                    
+                }
+            }
+        }
+    }
+    return true;
 }
 
 int main() {
@@ -60,6 +91,6 @@ int main() {
         {'.','.','.','.','8','.','.','7','9'}
     };
 
-    cout << isValidSudoku(board1) << endl; //false
+    cout << isValidSudoku(board2) << endl; //false
     return 0;
 }
