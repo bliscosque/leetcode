@@ -1,10 +1,13 @@
-use std::collections::BinaryHeap;
-
+#[derive(Debug)]
 struct MinStack {
-    els: Vec<i32>,
-    els_heap: BinaryHeap<i32>,
+    els: Vec<StackElem>,
+    
 }
-
+#[derive(Debug)]
+struct StackElem {
+    el: i32,
+    min_el: i32,
+}
 
 /** 
  * `&self` means the method takes an immutable reference.
@@ -13,24 +16,34 @@ struct MinStack {
 impl MinStack {
 
     fn new() -> Self {
-        Self::new()
+        MinStack {
+            els: Vec::new(),
+        }
     }
     
-    fn push(&self, val: i32) {
-        self.els.push(val);
-        self.els_heap.push(val);
+    fn push(&mut self, val: i32) {
+        let lmin=self.get_min();
+        self.els.push( StackElem
+            {el:val,
+             min_el: lmin.min(val),
+            }
+        );
     }
     
-    fn pop(&self) {
+    fn pop(&mut self) {
+        self.els.pop();
         
     }
     
     fn top(&self) -> i32 {
-        
+        let last=self.els.get(self.els.len()-1).unwrap();
+        return last.el;
     }
     
     fn get_min(&self) -> i32 {
-        
+        if self.els.len()==0 {return i32::MAX};
+        let last=self.els.get(self.els.len()-1).unwrap();
+        return last.min_el;
     }
 }
 
@@ -44,5 +57,13 @@ impl MinStack {
  */
 
 fn main() {
-
+    let mut ms=MinStack::new();
+    ms.push(-2);
+    ms.push(0);
+    ms.push(-3);
+    //println!("{:?}",ms);
+    println!("{}",ms.get_min());
+    ms.pop();
+    println!("{}",ms.top());
+    println!("{}",ms.get_min());
 }
