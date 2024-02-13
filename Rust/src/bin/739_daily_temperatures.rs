@@ -1,3 +1,5 @@
+// O n^2
+/*
 impl Solution {
     pub fn daily_temperatures(temperatures: Vec<i32>) -> Vec<i32> {
         let mut ans=Vec::new();
@@ -13,6 +15,28 @@ impl Solution {
             else {
                 ans.push((p-idx) as i32);
             }
+        }
+        ans
+    }
+}
+ */
+
+impl Solution {
+    pub fn daily_temperatures(temperatures: Vec<i32>) -> Vec<i32> {
+        let mut ans: Vec<i32>=vec![0;temperatures.len()];
+        let mut stack:Vec<(usize,i32)>=Vec::new();
+        for (i,temp) in temperatures.iter().enumerate() {
+            while !stack.is_empty() {
+                let (last_i,last_t)=*stack.last().unwrap();
+                if *temp > last_t {
+                    ans[last_i]=(i-last_i) as i32;
+                    stack.pop();
+                }          
+                else {
+                    break;
+                }      
+            }
+            stack.push((i,*temp));
         }
         ans
     }
