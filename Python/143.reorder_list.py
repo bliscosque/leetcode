@@ -14,29 +14,35 @@ class ListNode:
 
 class Solution:
     def getLast(self,head):
-        while head is not None and head.next is not None:
-            print("in getLast", head.val, head.next.val)
+        if head is None or head.next is None or head.next.next is None: return None
+        while head.next.next is not None:
+            #print("in getLast", head.val, head.next.val)
             head=head.next
-        n=head
+        n=head.next
         head.next=None
-        print(head.val)
+        #print("getLast: ",n.val)
         return n
     
     def reorderList(self, head) -> None:
         """
         Do not return anything, modify head in-place instead.
         """
-        #while head is not None and head.next is not None and head.next.next is not None:
-        n=head.next
-        l=self.getLast(head)
-        print("last",l)
-        head.next=l
-        pList(head)
-        #head.next.enxt=n
-        #head=head.next.next
+        while True:
+            if head is None or head.next is None: break
+            n=head.next
+            l=self.getLast(head)
+            if l is None: break
+            #print("last",l.val)
+            head.next=l
+            head.next.next=n
+            #pList(head)
+            head=head.next.next
 
 s=Solution()
-l=ListNode(1,ListNode(2,ListNode(3,ListNode(4))))
-pList(l)
-s.reorderList(l)
-pList(l)
+l1=ListNode(1,ListNode(2,ListNode(3,ListNode(4))))
+s.reorderList(l1)
+pList(l1)
+
+l2=ListNode(1,ListNode(2,ListNode(3,ListNode(4,ListNode(5)))))
+s.reorderList(l2)
+pList(l2)
