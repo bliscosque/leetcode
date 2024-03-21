@@ -41,21 +41,17 @@ class DLL:
         if self.num_elem>self.capacity:
             #delete tail
             last=self.tail
+            print(last, last.val)
+
             self.tail=last.prev
             self.tail.next=None
 
             self.num_elem=self.capacity
             # delete from hashmap
-            del hm[last.val]
+            rem_key=[k for k,val in hm.items() if val==last]
+            del hm[rem_key[0]]
         
         # return pos os added node
-
-        print("For")
-        pList(self.head)
-        print("Back")
-        pListRev(self.tail)
-        print()
-        
         return n
 
     def promote(self,node):  # troubleshooting on going in this function
@@ -94,34 +90,70 @@ class LRUCache:
         if not key in self.hm:
             return -1
         self.dll.promote(self.hm[key])
-        print("Get: ",key)
-        pList(self.dll.head)
-        pListRev(self.dll.tail)
+        #print("Get: ",key)
+        #print("For: ")
+        #pList(self.dll.head)
+        #print("Back: ")
+        #pListRev(self.dll.tail)
         return self.hm[key].val
         
 
     def put(self, key: int, value: int) -> None:
         print('Put: ', key, value)
-        n=self.dll.add(value, self.hm) # receives a hm to delete pair if needed
-        self.hm[key]=n
-        pList(self.dll.head)
-        print(self.hm)
-        print()
+        if key in self.hm: #already in HM. Just update the value
+            node=self.hm[key]
+            node.val=value
+            self.dll.promote(self.hm[key])
+        else:
+            n=self.dll.add(value, self.hm) # receives a hm to delete pair if needed
+            self.hm[key]=n
+        #print("For: ")
+        #pList(self.dll.head)
+        #print("Back: ")
+        #pListRev(self.dll.tail)
+        #print('HM: ')
+        #print(self.hm)
+        #print()
              
 
 
 # Your LRUCache object will be instantiated and called as such:
-lru = LRUCache(2)
-lru.put(1,1)
-lru.put(2,2)
-print(lru.get(1))
+#lru = LRUCache(2)
+#lru.put(1,1)
+#lru.put(2,2)
+#print(lru.get(1))
 
-lru.put(3,3)
-print(lru.get(2))
-lru.put(4,4)
-print(lru.get(1))
-print(lru.get(3))
-print(lru.get(4))
+#lru.put(3,3)
+#print(lru.get(2))
+#lru.put(4,4)
+#print(lru.get(1))
+#print(lru.get(3))
+#print(lru.get(4))
 
 #["LRUCache","put","put","get","put","get","put","get","get","get"]
-#[[2],[1,0],[2,2],[1],[3,3],[2],[4,4],[1],[3],[4]]
+#[[2],[1,0],[2,2],[1],[3,3],[2],           [4,4],[1],[3],[4]]
+#lru2 = LRUCache(2)
+#lru2.put(1,0)
+#lru2.put(2,2)
+#print(lru2.get(1))
+#lru2.put(3,3)
+#print(lru2.get(2))
+#lru2.put(4,4)
+#print(lru2.get(1))
+#print(lru2.get(3))
+#print(lru2.get(4))
+
+#["LRUCache","put","put","get","put","put","get"]
+#[[2],[2,1],[2,2],[2],[1,1],[4,1],[2]]
+
+#lru3=LRUCache(2)
+#lru3.put(2,1)
+#lru3.put(2,2)
+
+["LRUCache","put","put","put","put","get","get"]
+[[2],       [2,1],[1,1],[2,3],[4,1],[1],[2]]
+
+#lru4=LRUCache(2)
+#lru4.put(2,1)
+#lru4.put(1,1)
+#lru4.put(2,3)
