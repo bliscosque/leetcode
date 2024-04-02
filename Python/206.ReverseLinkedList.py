@@ -31,8 +31,6 @@ class Solution:
         return prev
             
         
-
-
 s=Solution()
 l1=ListNode(1,ListNode(2,ListNode(3,ListNode(4,ListNode(5)))))
 pList(l1)
