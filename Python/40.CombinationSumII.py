@@ -3,26 +3,25 @@
 from typing import Optional, List
 class Solution:
     def combinationSum2(self, candidates: List[int], target: int) -> List[List[int]]:
-        used=[False]*len(candidates)
+        candidates.sort()
         ans=set()
-        def combSumInt(target):
+        def combSumInt(target, pos, path):
             if target==0:
-                ansP=[]
-                for i in range(len(candidates)):
-                    if used[i]: ansP.append(candidates[i])
-                ansP.sort()
-                ans.add(tuple(ansP))
+                ans.add(tuple(path))
                 return
-            if target<0:
-                return
-            for i in range(len(candidates)):
-                if not used[i]:
-                    used[i]=True
-                    combSumInt(target-candidates[i])
-                    used[i]=False    
-        combSumInt(target)
-        ansList=[list(i) for i in ans]
-        return ansList
+            for i in range(pos,len(candidates)):
+                if i>pos and candidates[i]==candidates[i-1]:
+                    continue
+                if candidates[i] > target:
+                    break
+                combSumInt(target-candidates[i],i+1,path+[candidates[i]])
+               
+                    
+        combSumInt(target,0,[])
+        
+        return [list(i) for i in ans]
 
 s=Solution()
 print(s.combinationSum2([10,1,2,7,6,1,5],8))
+print(s.combinationSum2([1,1,2],2))
+print(s.combinationSum2([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],27))
