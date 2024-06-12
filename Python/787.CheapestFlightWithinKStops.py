@@ -8,7 +8,7 @@ class Solution:
         for u,v,w in flights:
             G[u].append((v,w))
         
-        distances=[math.inf]*n
+        best_distance={} # (ngb, n_stops) -> best_distance
 
         pq=[(0,0,src)] #priority queue (dist,num_stops,vertex)
         heapq.heapify(pq)
@@ -24,7 +24,10 @@ class Solution:
             
             for neighbor,weight in G[cur_V]:
                 distance=cur_distance+weight
-                heapq.heappush(pq,(distance,n_stops+1,neighbor))
+                
+                if (neighbor,n_stops+1) not in best_distance or distance<best_distance[(neighbor,n_stops+1)]:
+                    best_distance[(neighbor,n_stops+1)]=distance  
+                    heapq.heappush(pq,(distance,n_stops+1,neighbor))
         
         
         return -1
