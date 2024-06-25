@@ -1,10 +1,13 @@
 class Solution:
     def numDecodings(self, s: str) -> int:
+        d={}
         def f_int(ss):
+            if ss in d: return d[ss]
+
             #print(ss)
 
             if len(ss)==0: return 0
-            if len(ss)==1: return 1
+            if len(ss)==1: return 0 if ss=='0' else 1
 
             # try split 1 char
             s1=int(ss[0])
@@ -21,6 +24,7 @@ class Solution:
             else: op2=f_int(s2)
             #print("op2",ss, op2)
 
+            d[ss]=op1+op2
             return op1+op2
         
         return f_int(s)
@@ -31,5 +35,5 @@ s=Solution()
 print(s.numDecodings("12")) #2
 print(s.numDecodings("226")) #3
 print(s.numDecodings("06")) #0
-print(s.numDecodings("0")) #0 ERRO!!
-
+print(s.numDecodings("0")) #0 
+print(s.numDecodings("111111111111111111111111111111111111111111111")) #1836311903
