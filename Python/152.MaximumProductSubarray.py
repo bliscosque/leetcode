@@ -33,11 +33,15 @@ class Solution:
             return maxProdutWOZeros(nums)
 
         ans=0
+        idx0=0
         while 0 in nums:
             idx0=nums.index(0)
             ans=max(ans,maxProdutWOZeros(nums[:idx0]))
             nums=nums[idx0+1:]
+            #print(idx0)
 
+        ans=max(ans,maxProdutWOZeros(nums)) # after last zero
+        
         return ans
 
 s=Solution()
