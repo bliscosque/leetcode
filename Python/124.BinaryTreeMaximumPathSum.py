@@ -50,7 +50,10 @@ class Solution:
         if maxVal<0: 
             return maxVal
         
-        return self.maxPathSum_int(root)
+        self.maxVal=maxVal
+        
+        ansRoot=self.maxPathSum_int(root)
+        return max(self.maxVal, ansRoot)
 
     def maxPathSum_int(self, root: Optional[TreeNode]) -> int:
         if not root: return 0
@@ -61,21 +64,26 @@ class Solution:
         if maxSumLeft<0: maxSumLeft=0
         if maxSumRight<0: maxSumRight=0
         includeRoot=root.val+maxSumLeft+maxSumRight
-        print(includeRoot, root.val, maxSumLeft, maxSumRight)
-        if includeRoot>maxSumLeft and includeRoot>maxSumRight:
-            return includeRoot
-        else:
-            return max(maxSumLeft,maxSumRight)
+        #print(includeRoot, root.val, maxSumLeft, maxSumRight)
+        
+        self.maxVal=max(self.maxVal,maxSumLeft,maxSumRight) #check without including root
+        self.maxVal=max(self.maxVal,includeRoot) # including root, check if value is max
+
+        return max(maxSumLeft,maxSumRight)+root.val
+
+
 
 
 t1=array_to_tree([1,2,3])
 s=Solution()
-#print(s.maxPathSum(t1)) # 6
+print(s.maxPathSum(t1)) # 6
 t2=array_to_tree([-10,9,20,None,None,15,7])
-#print(s.maxPathSum(t2)) # 42
+print(s.maxPathSum(t2)) # 42
 t3=array_to_tree([-3])
-#print(s.maxPathSum(t3)) # -3
+print(s.maxPathSum(t3)) # -3
 t4=array_to_tree([-2,1])
-#print(s.maxPathSum(t4)) # 1
+print(s.maxPathSum(t4)) # 1
 t5=array_to_tree([1,-2,-3,1,3,-2,None,-1])
 print(s.maxPathSum(t5)) # 3
+t6=array_to_tree([5,4,8,11,None,13,4,7,2,None,None,None,1])
+print(s.maxPathSum(t6)) # 48
