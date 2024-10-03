@@ -1,0 +1,22 @@
+def floyd_warshall(graph):
+    V=len(graph)
+    dst=[row[:] for row in graph]
+
+    for k in range(V):
+        for i in range(V):
+            for j in range(V):
+                dst[i][j]=min(dst[i][j], dst[i][k]+dst[k][j])
+
+    return dst
+
+INF=float("inf")
+graph=[
+    [0,8,INF,1],
+    [INF,0,1,INF],
+    [4,INF,0,INF],
+    [INF,2,9,0]
+]
+
+result=floyd_warshall(graph)
+for row in result:
+    print([x if x != INF else "INF" for x in row])
