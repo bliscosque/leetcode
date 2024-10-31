@@ -1,57 +1,84 @@
 from collections import defaultdict
 
-def to_graph(expression):
-    graph = defaultdict(list)
-    for clause in expression.split('^'):
-        literals = [int(x.strip('~')) for x in clause.strip('()').split('v')]
-        if len(literals) != 2:
-            raise ValueError("Invalid 2-SAT clause: must have exactly two literals")
-        x1, x2 = literals
-        if x1 < 0:
-            graph[-x1].append(-x2)
-        else:
-            graph[x1].append(x2)
-        if x2 < 0:
-            graph[-x2].append(-x1)
-        else:
-            graph[x2].append(x1)
-    return graph
+class TwoSAT:
+    def __init__(self, n):
+        self.n = n  # Número de variáveis
+        self.adj = defaultdict(list)  # Grafo de implicações
+        self.adj_inv = defaultdict(list)  # Grafo transposto
+        self.visited = [False] * (2 * n)
+        self.scc = [-1] * (2 * n)
+        self.stack = []
+        
+    def add_clause(self, u, v):
+        """Adiciona cláusula (u ∨ v) ao grafo de implicações."""
+        # para cala clausula, adicionamos "Nao A -> B" e "Nao B -> A"
+        self.adj[u ^ 1].append(v)  # ¬u implica v
+        self.adj[v ^ 1].append(u)  # ¬v implica u
+        self.adj_inv[v].append(u ^ 1)
+        self.adj_inv[u].append(v ^ 1)
+        
+    def dfs1(self, v):
+        self.visited[v] = True
+        for neighbor in self.adj[v]:
+            if not self.visited[neighbor]:
+                self.dfs1(neighbor)
+        self.stack.append(v)
+        
+    def dfs2(self, v, label):
+        self.scc[v] = label
+        for neighbor in self.adj_inv[v]:
+            if self.scc[neighbor] == -1:
+                self.dfs2(neighbor, label)
+                
+    def solve(self):
+        # Os passos 1 e 2 são do algoritmo de Kosaraju
 
-def dfs(graph, node, visited, stack):
-    visited.add(node)
-    for neighbor in graph[node]:
-        if neighbor not in visited:
-            dfs(graph, neighbor, visited, stack)
-    stack.append(node)
+        # Passo 1: Executa DFS para ordem topológica
+        for i in range(2 * self.n):
+            if not self.visited[i]:
+                self.dfs1(i)
+        
+        # Passo 2: Processa grafo transposto por ordem reversa
+        label = 0
+        while self.stack:
+            v = self.stack.pop()
+            if self.scc[v] == -1:
+                self.dfs2(v, label)
+                label += 1
+                
+        # Verifica se cada variável está em componente diferente de sua negação
+        assignment = [False] * self.n
+        for i in range(self.n):
+            if self.scc[2 * i] == self.scc[2 * i + 1]:
+                return None  # Não é satisfazível
+            assignment[i] = self.scc[2 * i] < self.scc[2 * i + 1]
+            
+        return assignment
 
-def kosaraju(graph):
-    n = max(max(abs(node) for node in graph), 0)
-    visited = set()
-    stack = []
-    for node in range(1, n+1):
-        if node not in visited:
-            dfs(graph, node, visited, stack)
 
-    scc = []
-    visited = set()
-    while stack:
-        node = stack.pop()
-        if node not in visited:
-            component = []
-            dfs(graph, node, visited, component)
-            scc.append(component)
-    return scc
+def main():
+    # Número de variáveis na expressão
+    n = 4
+    solver = TwoSAT(n)
+    
+    # Adiciona as cláusulas da expressão L1 = (x2 ∨ ¬x1)∧(¬x1 ∨ ¬x2)∧(x1 ∨ x3)∧(¬x2 ∨ ¬x3)∧(x1 ∨ x4)
+    # Cada variável xi é mapeada para um índice par (2i), e sua negação para o índice ímpar (2i+1)
+    # Traduzindo as cláusulas para índices:
+    # x1 -> 0, ¬x1 -> 1, x2 -> 2, ¬x2 -> 3, x3 -> 4, ¬x3 -> 5, x4 -> 6, ¬x4 -> 7
 
-def solve_2sat(expression):
-    graph = to_graph(expression)
-    scc = kosaraju(graph)
-    for component in scc:
-        if any(abs(x) in component for x in component):
-            return False
-    return True
+    solver.add_clause(2, 1)   # (x2 ∨ ¬x1)
+    solver.add_clause(1, 3)   # (¬x1 ∨ ¬x2)
+    solver.add_clause(0, 4)   # (x1 ∨ x3)
+    solver.add_clause(3, 5)   # (¬x2 ∨ ¬x3)
+    solver.add_clause(0, 6)   # (x1 ∨ x4)
 
-expression = "(x2 v ~x1) ^ (~x1 v ~x2) ^ (x1 v x3) ^ (~x2 v ~x3) ^ (x1 v x4)"
-if solve_2sat(expression):
-    print("The 2-SAT expression is satisfiable.")
-else:
-    print("The 2-SAT expression is not satisfiable.")
+    result = solver.solve()
+    
+    if result is None:
+        print("A expressão não é satisfazível.")
+    else:
+        print("A expressão é satisfazível. Atribuição:", result)
+
+
+if __name__ == "__main__":
+    main()
