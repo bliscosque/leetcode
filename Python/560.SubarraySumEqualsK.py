@@ -1,24 +1,16 @@
 from typing import List
 class Solution:
     def subarraySum(self, nums: List[int], k: int) -> int:
-        i,j=0,0
+        hm={0:1} #prefix_sum -> count
+        curSum=0
         ans=0
-        n=len(nums)
-        spar=0
-        while j<n:
-            spar+=nums[j]
-            j+=1
-
-            #print(i,j,spar)
-
-            if spar==k:
-                ans+=1
-                
-            while spar>=k:
-                spar-=nums[i]
-                i+=1
-
+        for n in nums:
+            curSum+=n
+            diff=curSum-k
+            ans+=hm.get(diff,0)
+            hm[curSum]=1+hm.get(curSum,0)
         return ans
+
 
         
 
