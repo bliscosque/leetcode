@@ -27,4 +27,4 @@ print(s.longestCommonPrefix(["flower","flow","flight"])) # fl
 print(s.longestCommonPrefix(["dog","racecar","car"])) # ""
 print(s.longestCommonPrefix([""])) # ""
 print(s.longestCommonPrefix(["",""])) # ""
-print(s.longestCommonPrefix(["ab","a"])) # ""
+print(s.longestCommonPrefix(["ab","a"])) # "a"
